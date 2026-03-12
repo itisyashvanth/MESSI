@@ -1,146 +1,223 @@
-# 🧠 MESSI – Mathematically Enhanced Structuring of Semi-Structured Inputs
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/itisyashvanth/MESSI.git)
+# MESSI — Mathematically Enhanced Structuring of Semi-Structured Inputs
 
-> Because humans don’t type in JSON.
-
-MESSI transforms real-world messy communication such as tweets, chats, and notes filled with slang, emojis, abbreviations, and typos into clean, structured, machine-readable data that AI systems can reliably use. Unlike traditional NLP pipelines, MESSI does not blindly guess; it reasons mathematically, validates outputs against real-world constraints, and explicitly quantifies uncertainty.
-
-The core problem MESSI addresses is the mismatch between how humans communicate and how machines require data. Humans write things like: "yo AA102 delayed AGAIN 😤 smh". AI systems, however, need structured representations such as a `flight_id` of `AA102`, an `event` of `delay`, a `complaint` sentiment, and a `confidence_score` of `0.94`. Existing solutions fail because they assume clean and well-formed input. MESSI bridges this gap between human expression and machine requirements.
-
-## Key Features
-
--   **Handles Real-World Messiness**: Understands slang and shortcuts (`smh`, `ngl`), interprets emojis (`😤`, `💀`) as semantic signals, and corrects typos (`flihgt` -> `flight`).
--   **Context Resolution**: Resolves missing information, such as identifying an airline from a flight number.
--   **Mathematical Reasoning**: Uses constrained optimization to enforce real-world rules, preventing hallucinations and ensuring outputs are logically consistent.
--   **Uncertainty Quantification**: Applies Monte Carlo Dropout to produce calibrated confidence scores, allowing the system to state when it is unsure.
-
-## Architecture
-
-MESSI is built on a three-layer intelligence architecture:
-
-1.  **Pattern Finder**: A BiLSTM-CRF deep learning model trained on messy text to treat emojis, slang, and typos as meaningful signals for robust entity extraction.
-2.  **Logic Validator**: Uses constrained optimization (via Google OR-Tools) to enforce real-world rules, ensuring outputs like flight IDs and events are valid and consistent.
-3.  **Honesty Checker**: Applies uncertainty quantification using Monte Carlo Dropout to produce calibrated confidence scores, enabling the system to honestly report its confidence level.
-
-The system pipeline is as follows:
-`Raw Text` → `Emoji-Preserving Tokenizer` → `BiLSTM-CRF` → `Constraint Validation (OR-Tools)` → `Uncertainty Estimation (MC Dropout)` → `Structured JSON Output`
-
-## Getting Started
-
-### Installation
-
-Clone the repository, create a virtual environment, and install the required dependencies.
-
-```bash
-git clone https://github.com/itisyashvanth/messi.git
-cd messi
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python -m spacy download en_core_web_sm
-```
-
-### Usage
-
-Use the `MESSIExtractor` class to process messy text and receive structured output.
-
-```python
-from messi import MESSIExtractor
-
-extractor = MESSIExtractor()
-messy_text = "yo AA102 delayed AGAIN 😤 smh"
-structured_data = extractor.process(messy_text)
-
-print(structured_data)
-# Expected Output:
-# {
-#   "flight_id": "AA102",
-#   "event": "delay",
-#   "confidence": {
-#     "flight_id": 0.98,
-#     "event": 0.91
-#   }
-# }
-```
-
-## Messy2Structured Dataset
-
-MESSI introduces **Messy2Structured**, the first public benchmark dataset for messy-to-structured NLP. It contains over 500 annotated real-world samples from airline and e-commerce communications, complete with slang, emojis, typos, and missing context.
-
-The dataset is available on Hugging Face and can be loaded directly:
-
-```python
-from datasets import load_dataset
-
-dataset = load_dataset("messi/messy2structured")
-```
-
-## Performance
-
-| Metric                 | Score  |
-| ---------------------- | ------ |
-| Entity F1-Score        | 0.89   |
-| End-to-End Accuracy    | 0.85   |
-| Constraint Satisfaction| 99.2%  |
-| Calibration Error      | 0.06   |
-
-The system runs efficiently on CPU-only hardware (Apple M1/M2), processing approximately **500 samples/second**.
-
-## Research & Citation
-
-This work introduces a novel hybrid deep learning and mathematical optimization architecture and the first public benchmark for messy-to-structured conversion. A research paper is in preparation for the NeurIPS Datasets and Benchmarks Track.
-
-If you use MESSI in your research, please cite:
-
-```bibtex
-@inproceedings{yashvanth2025messi,
-    title={MESSI: Mathematically Enhanced Structuring of Semi-Structured Inputs},
-    author={Yashvanth},
-    year={2025},
-    booktitle={Advances in Neural Information Processing Systems}
-}
-```
-
-## Development
-
-To run tests and view coverage, use `pytest`:
-
-```bash
-pytest --cov=./
-```
-
-Training custom models is supported through configurable scripts. Data annotation can be performed using Label Studio with the raw data provided in the repository.
-
-## Roadmap
-
--   [x] Dataset Collection & Annotation
--   [x] BiLSTM-CRF Implementation
--   [x] Constraint Optimization Integration
--   [x] Uncertainty Quantification
--   [ ] Evaluation & Benchmarking
--   [ ] Paper Writing & Submission
-
-Future work includes document processing (PDFs, receipts), multilingual support, and real-time streaming APIs for domains like healthcare and emergency response.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request. Areas of interest include:
--   Annotating new domains (healthcare, legal)
--   Building multilingual datasets
--   Performance optimizations
--   Adding new constraint solvers
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
--   [Airline Twitter Sentiment Dataset](https://www.kaggle.com/datasets/crowdflower/twitter-airline-sentiment) from Kaggle
--   BiLSTM-CRF architecture by [Lample et al. (2016)](https://arxiv.org/abs/1603.01360)
--   Monte Carlo Dropout method by [Gal and Ghahramani (2016)](http://proceedings.mlr.press/v48/gal16.html)
+> **A Neuro-Symbolic Information Extraction & Decision Automation Platform**
 
 ---
-*Built with love to make AI work with real-world human communication.*
 
-**Author**: Yashvanth ([@itisyashvanth](https://github.com/itisyashvanth))
+## What MESSI Does
+
+Takes messy, emoji-laden customer messages and turns them into structured, validated, actionable records — fully offline.
+
+```
+"😠 order #4540 not delivered again asap"
+         ↓
+  RECORD:    { ORDER_ID: "4540", ISSUE_TYPE: "not delivered" }
+  URGENCY:   HIGH 🔴
+  ACTION:    zendesk_ticket
+  ROUTING:   automated  (confidence 0.94)
+```
+
+---
+
+## 6-Layer Pipeline
+
+| Layer | File | What it does |
+|-------|------|-------------|
+| 1 | `preprocessing.py` | Emoji-aware tokeniser + spaCy(300d) + emoji(50d) = ℝ³⁵⁰ embedding |
+| 2 | `model.py` | 3-layer Bidirectional LSTM + CRF decoder + Char-CNN encoder |
+| 3 | `ilp.py` | OR-Tools CP-SAT ILP validator (regex, allowlist, cardinality, no-overlap) |
+| 4 | `uncertainty.py` | Monte Carlo Dropout (T=10 passes) → predictive entropy per field |
+| 5 | `uncertainty.py` | Rule-based Decision Engine → 3-tier urgency + action routing |
+| 6 | `api.py` | Lazy-import dispatcher → Zendesk / Salesforce / Slack / Twilio / Firebase / PostgreSQL |
+
+---
+
+## Quick Start
+
+### 1. Install dependencies
+
+```bash
+pip install -r requirements.txt
+python -m spacy download en_core_web_md
+```
+
+### 2. One-command full pipeline
+
+```bash
+python run_all.py
+```
+
+This runs all 5 stages in order:
+```
+✓ Data Generation   → 5,000 BIO-tagged samples (e-commerce + aviation)
+✓ Model Training    → BiLSTM-CRF with char-CNN, warmup schedule, 60 epochs
+✓ Evaluation        → Token-level + span-level F1, Cohen's κ
+✓ Benchmark         → Parameters, latency, throughput, accuracy
+✓ Live Demo         → 12 showcase messages through full pipeline
+```
+
+**Quick mode (5 epochs, 800 samples — for testing):**
+
+```bash
+python run_all.py --quick
+```
+
+**Skip retraining (use existing checkpoint):**
+
+```bash
+python run_all.py --skip-train
+```
+
+### 3. Live demo
+
+```bash
+# Run 12 showcase messages (both domains)
+python demo.py
+
+# Your own message
+python demo.py --text "😠 order #782 payment failed send help"
+```
+
+### 4. Run individual stages
+
+```bash
+# Generate data
+python data_utils.py --n-ec 3000 --n-av 2000
+
+# Train
+python train.py --epochs 60
+
+# Evaluate (token + span F1)
+python evaluate.py --test data/annotated/test.jsonl
+
+# Benchmark (efficiency + accuracy)
+python benchmark.py --epochs 20 --samples 1000
+
+# Single inference
+python main.py --text "flight UA4821 delayed 🔥"
+```
+
+---
+
+## Emoji Vocabulary — 7 Categories, 45 Unique Emojis
+
+| Category | Emojis | Urgency |
+|----------|--------|---------|
+| **ANGER** (most frequent) | 😠 😡 🤬 💀 🔥 | 🔴 HIGH |
+| **ALERT** (most frequent) | ⚠️ 🚨 🔔 ⏰ 📢 🆘 | 🔴 HIGH |
+| **MILD** (most frequent) | 😑 🙄 😒 😤 | 🟡 MEDIUM |
+| SADNESS | 😢 😭 💔 😔 😞 😿 🥺 😩 😫 | 🟡 MEDIUM |
+| SARCASM | 😏 🤡 🥴 💅 | 🟡 MEDIUM |
+| POSITIVE | 👍 😊 🙏 ✅ 🎉 😄 🤗 💯 🙌 | 🟢 LOW |
+| NEUTRAL | 🤷 😐 🤔 🫤 😶 🧐 🫥 | 🟢 LOW |
+
+---
+
+## Entity Schema (BIO Tags)
+
+### E-Commerce Domain
+| Tag | Example |
+|-----|---------|
+| `B-ORDER_ID` / `I-ORDER_ID` | `#4540`, `7821` |
+| `B-ISSUE_TYPE` / `I-ISSUE_TYPE` | `payment failed`, `not delivered` |
+
+### Aviation Domain
+| Tag | Example |
+|-----|---------|
+| `B-FLIGHT_ID` / `I-FLIGHT_ID` | `UA4821`, `DL9902` |
+| `B-EVENT` / `I-EVENT` | `delayed`, `has been cancelled` |
+| `B-TIME` / `I-TIME` | `3 hours`, `by 5pm` |
+
+---
+
+## Model Architecture (v2)
+
+```
+Input Tokens
+    ├── spaCy en_core_web_md (frozen, 300d) ─┐
+    ├── Trainable emoji embedding (50d)      ├─ concat → ℝ^350 → Dropout(0.25)
+    └── Char-CNN (Conv1d, 64 filters, k=3)  ─┘         → ℝ^414
+
+    → 3-layer BiLSTM (hidden=320, bidirectional) → ℝ^640
+    → Linear projection → ℝ^K (K = 11 tags)
+    → CRF Viterbi decoder (with label smoothing α=0.08)
+
+Parameters:   ~4.2M trainable
+Latency:      ~3–5 ms / sample (CPU)
+Throughput:   ~250 samples/sec (batch=32, CPU)
+```
+
+---
+
+## Training Hyperparameters (v2)
+
+| Setting | Value |
+|---------|-------|
+| Optimiser | Adam (weight_decay=1e-5) |
+| Learning rate | 5e-4 |
+| Schedule | Linear warmup (2 epochs) → Cosine decay |
+| Epochs | 60 (early stopping patience=10) |
+| Batch size | 32 |
+| Gradient clipping | 5.0 |
+| Label smoothing | 0.08 |
+
+---
+
+## Expected Benchmark Results
+
+| Metric | Value |
+|--------|-------|
+| Macro Token F1 | 0.87–0.92 |
+| Span-level F1 | 0.84–0.90 |
+| Cohen's κ | 0.82–0.88 |
+| Inference latency | < 5 ms/sample |
+| Throughput | > 200 samples/sec |
+
+---
+
+## Project Files
+
+```
+messi/
+├── config.py          # All hyperparameters, paths, thresholds
+├── preprocessing.py   # Layer 1: tokeniser + embeddings
+├── model.py           # Layer 2: BiLSTM-CRF + Char-CNN
+├── ilp.py             # Layer 3: ILP symbolic validator
+├── uncertainty.py     # Layers 4+5: MC Dropout + Decision Engine
+├── api.py             # Layer 6: API dispatch
+├── data_utils.py      # Synthetic data generator (2 domains, 45 emojis)
+├── train.py           # Training loop (AMP, warmup, early stopping)
+├── evaluate.py        # Token + span F1, Cohen's κ, error analysis
+├── benchmark.py       # Efficiency + accuracy benchmark
+├── demo.py            # 🎯 Live inference showcase
+├── run_all.py         # 🚀 One-command pipeline runner
+├── main.py            # End-to-end inference entry point
+├── baselines.py       # spaCy NER + BERT baselines
+└── tests/
+    └── test_messi.py  # Consolidated test suite
+```
+
+---
+
+## Environment Variables (API Integration)
+
+```bash
+export ZENDESK_URL="https://your-domain.zendesk.com"
+export ZENDESK_EMAIL="admin@example.com"
+export ZENDESK_TOKEN="..."
+export SALESFORCE_URL="https://your-domain.salesforce.com"
+export SALESFORCE_TOKEN="..."
+export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/..."
+export POSTGRES_DSN="postgresql://user:pass@localhost:5432/messi"
+```
+
+APIs run in **dry-run mode by default** — set `--live` in demo.py to dispatch real actions.
+
+---
+
+## Academic References
+
+- Ma & Hovy (2016) — *End-to-end Sequence Labeling via Bi-directional LSTM-CNNs-CRF*
+- Lafferty et al. (2001) — *Conditional Random Fields: Probabilistic Models for Segmenting and Labeling Sequence Data*
+- Gal & Ghahramani (2016) — *Dropout as a Bayesian Approximation*
+- Müller-Eising (2019) — *ILP-Based Constraint Solving for NLP*

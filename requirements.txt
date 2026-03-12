@@ -1,0 +1,106 @@
+# ===========================
+# MESSI — Python Dependencies
+# ===========================
+
+# ---------------------
+# Core NLP & Embeddings
+# ---------------------
+spacy>=3.7.4
+emoji==2.10.1
+
+# ----------------------
+# Deep Learning (PyTorch)
+# ----------------------
+torch>=2.2.1
+torchvision>=0.17.1
+
+# -------------------------
+# Optimization / ILP Solver
+# -------------------------
+ortools>=9.9.3963
+
+# --------------------
+# Data & Utilities
+# --------------------
+numpy>=1.26.4
+pandas>=2.2.1
+scikit-learn>=1.4.1
+tqdm>=4.66.2
+pyyaml>=6.0.1
+jsonlines>=4.0.0
+pydantic>=2.0
+
+# ------------------
+# API Integration
+# ------------------
+requests>=2.31.0
+
+# ------------------
+# Web Server (demo UI)
+# ------------------
+flask>=3.0.0
+flask-cors>=4.0.0
+psycopg2-binary>=2.9.9
+
+# ------------------
+# Dataset Download
+# ------------------
+datasets>=2.18.0
+
+# ------------------
+# Baselines
+# ------------------
+transformers>=4.39.3
+accelerate>=0.28.0
+
+# --------
+# Testing
+# --------
+pytest>=8.1.1
+pytest-cov>=5.0.0
+
+
+# ----------------------
+# Deep Learning (PyTorch)
+# ----------------------
+torch==2.2.1
+torchvision==0.17.1
+
+# -------------------------
+# Optimization / ILP Solver
+# -------------------------
+ortools==9.9.3963
+
+# --------------------
+# Data & Utilities
+# --------------------
+numpy==1.26.4
+pandas==2.2.1
+scikit-learn==1.4.1.post1
+tqdm==4.66.2
+pyyaml==6.0.1
+jsonlines==4.0.0
+
+# ------------------
+# API Integration
+# ------------------
+requests==2.31.0
+
+# ------------------
+# Baselines
+# ------------------
+transformers==4.39.3
+datasets==2.18.0
+accelerate==0.28.0
+
+# --------
+# Testing
+# --------
+pytest==8.1.1
+pytest-cov==5.0.0
+
+# --------
+# Dev / Demo
+# --------
+jupyter==1.0.0
+ipykernel==6.29.4
